@@ -1,8 +1,8 @@
 /* =====================================================================
  * js/admin.js — Logika antarmuka panel admin Kantin Kampus
  * ---------------------------------------------------------------------
- * Tugas UTS Pemrograman Web — PWUTS_A07_25091397099
- * Rizky Mardianto / 25091397099 / Kelompok A07
+ * Tugas UTS Pemrograman Web — PWUTS_C07_25091397099
+ * Rizky Mardianto / 25091397099 / Kelompok C07
  *
  * Isi berkas ini:
  *   1. Routing AJAX      — hyperlink sidebar memuat halaman tanpa reload
@@ -1021,7 +1021,7 @@
                '<td class="num">' + rupiah(d.subtotal) + '</td></tr>';
     });
 
-    $('#hasil-keterangan').text('Tersimpan pada database.');
+    $('#hasil-keterangan').text('Tersimpan di browser.');
     $('#hasil-body').html(
       '<dl class="ringkas-list">' +
         '<div><dt>No. pesanan</dt><dd>#' + hasil.id_pesanan + '</dd></div>' +
@@ -1048,22 +1048,18 @@
   }
 
   /* ==================================================================
-   * 9. PENANDA MODE (php / json) DI SIDEBAR
+   * 9. PENANDA MODE DI SIDEBAR
    * ================================================================== */
 
   function tandaiMode(mode) {
-    if (mode === 'php') {
-      $('#mode-dot').addClass('hidup');
-      $('#mode-text').text('Terhubung ke MySQL');
-      $('#mode-note').text('Data tersimpan permanen di database.');
-    } else if (mode === 'file') {
+    if (mode === 'file') {
       $('#mode-dot').addClass('demo');
-      $('#mode-text').text('Perlu server lokal');
+      $('#mode-text').text('Perlu Live Server');
       $('#mode-note').text('Buka lewat Live Server, jangan klik ganda index.html.');
     } else {
       $('#mode-dot').addClass('demo');
       $('#mode-text').text('Mode demo (data JSON)');
-      $('#mode-note').text('PHP tidak aktif. Perubahan disimpan di browser.');
+      $('#mode-note').text('Perubahan tersimpan di browser.');
     }
   }
 
@@ -1281,7 +1277,7 @@
   $(function () {
     pasangEvent();
 
-    // Deteksi apakah backend PHP aktif, lalu mulai routing.
+    // Muat data, lalu mulai routing.
     Api.init().done(function (mode) {
       tandaiMode(mode);
 
@@ -1303,9 +1299,6 @@
               '<li>Browser akan terbuka sendiri dengan alamat ' +
                   '<code>http://127.0.0.1:5500/index.html</code>. Alamat yang diawali ' +
                   '<code>http://</code> itulah tanda Live Server sudah aktif.</li>' +
-              '<li>Kalau ingin data tersimpan permanen di MySQL, pakai XAMPP: salin folder proyek ' +
-                  'ke <code>C:\\xampp\\htdocs\\</code>, nyalakan Apache &amp; MySQL, lalu buka ' +
-                  '<code>http://localhost/kantin-kampus-admin/</code>.</li>' +
             '</ol>' +
           '</div>'
         );
@@ -1316,9 +1309,13 @@
       if (!PAGES[awal]) { awal = 'dashboard'; }
       navigate(awal, true);
 
-      if (mode === 'json') {
-        toast('PHP tidak aktif — aplikasi berjalan dalam mode demo.', 'info');
-      }
+    }).fail(function (pesan) {
+      tandaiMode('file');
+      setHeader(PAGES.dashboard);
+      $('#page-content').attr('aria-busy', 'false').html(
+        '<div class="notice danger"><strong>Data gagal dimuat.</strong><p>' +
+        esc(pesan || 'Berkas data/*.json tidak ditemukan.') + '</p></div>'
+      );
     });
   });
 

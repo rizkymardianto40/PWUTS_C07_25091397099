@@ -1,29 +1,32 @@
 /* =====================================================================
- * js/api.js — Gerbang AJAX tunggal untuk seluruh aplikasi
+ * js/api.js — Sumber data aplikasi
  * ---------------------------------------------------------------------
- * Tugas UTS Pemrograman Web — PWUTS_A07_25091397099
+ * Tugas UTS Pemrograman Web — PWUTS_C07_25091397099
  *
- * Semua permintaan data melewati objek `Api` ini. Tujuannya agar
- * halaman (HTML) tidak pernah tahu apakah datanya datang dari:
+ * Aplikasi ini TIDAK memerlukan database maupun PHP. Seluruh data:
  *
- *   1. mode "php"  -> endpoint PHP + MySQL (butuh XAMPP/Apache)
- *   2. mode "json" -> file data/*.json + localStorage
- *                     (untuk dibuka lewat Live Server tanpa PHP)
+ *   1. Dibaca dari berkas JSON di folder data/  -> lewat AJAX ($.getJSON)
+ *   2. Perubahan disimpan di localStorage browser
  *
- * Mode dideteksi otomatis saat aplikasi pertama kali dijalankan,
- * sehingga website tetap bisa didemokan walau MySQL belum menyala.
+ * Jadi cukup dijalankan dengan Live Server. Tidak ada server database
+ * yang perlu dinyalakan.
+ *
+ * ---------------------------------------------------------------------
+ * Catatan untuk butir 2.c (form transaksi):
+ *   Validasi jQuery di js/admin.js SELALU berjalan lebih dulu. Hanya
+ *   kalau lolos, fungsi Api.buatPesanan() di bawah ini dipanggil.
+ *   Di sinilah satu-satunya tempat yang perlu diubah bila nanti ingin
+ *   menyambungkan form ke server (ganti isi fungsi dengan $.ajax POST).
  * ===================================================================== */
 
 var Api = (function ($) {
   'use strict';
 
   var CONFIG = {
-    phpBase: 'api/',
-    jsonBase: 'data/',
+    jsonBase: 'data/',        // folder berisi berkas JSON
     storageKey: 'kk_demo_db_v1',
-    mode: null,          // 'php' | 'json'
-    terdeteksi: false,
-    latency: 180         // jeda buatan agar indikator loading terlihat
+    fileMode: false,          // true bila dibuka lewat file:///
+    siap: false
   };
 
   /* ------------------------------------------------------------------
@@ -37,7 +40,7 @@ var Api = (function ($) {
     return d.promise();
   }
 
-  /** Escape HTML supaya data dari database tidak bisa menyuntik tag. */
+  /** Escape HTML supaya data tidak bisa menyuntik tag. */
   function esc(teks) {
     if (teks === null || teks === undefined) { return ''; }
     return String(teks)
@@ -54,7 +57,7 @@ var Api = (function ($) {
     return 'Rp' + n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   }
 
-  /** Format tanggal MySQL "2025-10-20 09:15:00" -> "20 Okt 2025, 09.15". */
+  /** Format tanggal "2025-10-20 09:15:00" -> "20 Okt 2025, 09.15". */
   function tanggal(teks) {
     if (!teks) { return '-'; }
     var bulan = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun',
@@ -66,16 +69,14 @@ var Api = (function ($) {
   }
 
   /* ------------------------------------------------------------------
-   * 2. PENYIMPANAN DEMO (mode json)
+   * 2. PENYIMPANAN PERUBAHAN (localStorage)
    * ------------------------------------------------------------------ */
 
-  var db = null;   // cache seluruh isi data/*.json + overlay localStorage
-
-  function kunciOverlay() { return CONFIG.storageKey; }
+  var db = null;   // isi data/*.json + perubahan dari localStorage
 
   function bacaOverlay() {
     try {
-      var raw = window.localStorage.getItem(kunciOverlay());
+      var raw = window.localStorage.getItem(CONFIG.storageKey);
       return raw ? JSON.parse(raw) : null;
     } catch (e) {
       return null;
@@ -84,7 +85,7 @@ var Api = (function ($) {
 
   function simpanOverlay() {
     try {
-      window.localStorage.setItem(kunciOverlay(), JSON.stringify({
+      window.localStorage.setItem(CONFIG.storageKey, JSON.stringify({
         menu: db.menu,
         pesanan: db.pesanan,
         detail_pesanan: db.detail_pesanan,
@@ -97,16 +98,19 @@ var Api = (function ($) {
   }
 
   function hapusOverlay() {
-    try { window.localStorage.removeItem(kunciOverlay()); } catch (e) { /* abaikan */ }
+    try { window.localStorage.removeItem(CONFIG.storageKey); } catch (e) { /* abaikan */ }
   }
 
-  /** Muat semua file JSON dasar lalu tempel overlay (kalau ada). */
+  /**
+   * Muat semua berkas JSON dasar, lalu tempel perubahan yang tersimpan
+   * di browser (kalau ada).
+   */
   function muatDemoDb() {
     if (db) { return tunda(db); }
 
     if (CONFIG.fileMode) {
       var d0 = $.Deferred();
-      d0.reject('Halaman dibuka dengan klik ganda (file://). Jalankan lewat Live Server atau Apache.');
+      d0.reject('Halaman dibuka dengan klik ganda (file://). Jalankan lewat Live Server.');
       return d0.promise();
     }
 
@@ -128,7 +132,6 @@ var Api = (function ($) {
           hasil[nama] = (args[i] && args[i][0]) ? args[i][0] : [];
         });
 
-        // Tempel perubahan yang tersimpan di browser
         var ov = bacaOverlay();
         if (ov) {
           $.each(['menu', 'pesanan', 'detail_pesanan', 'users'], function (i, k) {
@@ -137,80 +140,32 @@ var Api = (function ($) {
         }
 
         db = hasil;
+        CONFIG.siap = true;
         d.resolve(db);
       })
       .fail(function () {
-        d.reject('Gagal memuat file data/*.json. Pastikan folder data/ ada di samping index.html '
-               + 'dan halaman dibuka lewat Live Server, bukan dengan klik ganda index.html.');
+        d.reject('Gagal memuat berkas data/*.json. Pastikan folder data/ ada di samping '
+               + 'index.html dan halaman dibuka lewat Live Server, bukan dengan klik ganda.');
       });
 
     return d.promise();
   }
 
-  /* ------------------------------------------------------------------
-   * 3. DETEKSI MODE
-   * ------------------------------------------------------------------ */
-
-  /**
-   * Coba satu permintaan ringan ke api/menu.php.
-   * Kalau menjawab JSON yang benar -> mode php.
-   * Kalau tidak (Live Server tidak menjalankan PHP) -> mode json.
-   */
-  function deteksiMode() {
-    if (CONFIG.terdeteksi) { return tunda(CONFIG.mode); }
-
-    // Dibuka dengan klik ganda (file://): browser memblokir AJAX ke berkas
-    // lokal, jadi mode demo pun tidak bisa jalan. Beri tahu pengguna.
-    if (window.location.protocol === 'file:') {
-      CONFIG.mode = 'file';
-      CONFIG.terdeteksi = true;
-      CONFIG.fileMode = true;
-      return tunda('file');
-    }
-
-    var d = $.Deferred();
-
-    $.ajax({
-      url: CONFIG.phpBase + 'menu.php',
-      dataType: 'json',
-      timeout: 3500,
-      cache: false
-    }).done(function (res) {
-      if (res && res.ok === true && $.isArray(res.data)) {
-        CONFIG.mode = 'php';
-        CONFIG.terdeteksi = true;
-        d.resolve('php');
-      } else {
-        CONFIG.mode = 'json';
-        CONFIG.terdeteksi = true;
-        d.resolve('json');
-      }
-    }).fail(function () {
-      CONFIG.mode = 'json';
-      CONFIG.terdeteksi = true;
-      d.resolve('json');
-    });
-
-    return d.promise();
+  /** Paksa muat ulang dari berkas (dipakai setelah data berubah). */
+  function segarkan() {
+    db = null;
+    return muatDemoDb();
   }
 
   /* ------------------------------------------------------------------
-   * 4. PEMBACAAN DATA (READ)
+   * 3. PEMBACAAN DATA (READ)
    * ------------------------------------------------------------------ */
 
   function ambilMenu() {
-    if (CONFIG.mode === 'php') {
-      return $.ajax({ url: CONFIG.phpBase + 'menu.php', dataType: 'json', cache: false })
-        .then(function (res) { return res.data || []; });
-    }
     return muatDemoDb().then(function () { return db.menu.slice(); });
   }
 
   function ambilKategori() {
-    if (CONFIG.mode === 'php') {
-      return $.ajax({ url: CONFIG.phpBase + 'kategori.php', dataType: 'json', cache: false })
-        .then(function (res) { return res.data || []; });
-    }
     return muatDemoDb().then(function () {
       return $.map(db.kategori, function (k) {
         var n = 0;
@@ -223,10 +178,6 @@ var Api = (function ($) {
   }
 
   function ambilPenjual() {
-    if (CONFIG.mode === 'php') {
-      return $.ajax({ url: CONFIG.phpBase + 'penjual.php', dataType: 'json', cache: false })
-        .then(function (res) { return res.data || []; });
-    }
     return muatDemoDb().then(function () {
       return $.map(db.penjual, function (p) {
         var n = 0;
@@ -239,10 +190,6 @@ var Api = (function ($) {
   }
 
   function ambilUsers() {
-    if (CONFIG.mode === 'php') {
-      return $.ajax({ url: CONFIG.phpBase + 'users.php', dataType: 'json', cache: false })
-        .then(function (res) { return res.data || []; });
-    }
     return muatDemoDb().then(function () {
       return $.map(db.users, function (u) {
         return { id_user: u.id_user, nama: u.nama, username: u.username, role: u.role };
@@ -250,12 +197,8 @@ var Api = (function ($) {
     });
   }
 
-  /** Daftar pesanan + rincian item (disusun di sisi klien untuk mode json). */
+  /** Daftar pesanan + rincian item, disusun dari tabel pesanan & detail. */
   function ambilPesanan() {
-    if (CONFIG.mode === 'php') {
-      return $.ajax({ url: CONFIG.phpBase + 'pesanan.php', dataType: 'json', cache: false })
-        .then(function (res) { return res.data || []; });
-    }
     return muatDemoDb().then(function () {
       var hasil = $.map(db.pesanan, function (p) {
         var item = $.grep(db.detail_pesanan, function (d) {
@@ -286,11 +229,6 @@ var Api = (function ($) {
 
   /** Statistik ringkas untuk kartu dashboard. */
   function ambilStatistik() {
-    if (CONFIG.mode === 'php') {
-      return $.ajax({ url: CONFIG.phpBase + 'statistik.php', dataType: 'json', cache: false })
-        .then(function (res) { return res.data; });
-    }
-
     return $.when(ambilPesanan(), ambilMenu(), ambilPenjual()).then(function (pesanan, menu, penjual) {
       var pendapatan = 0;
       var perStatus = {};
@@ -342,32 +280,11 @@ var Api = (function ($) {
   }
 
   /* ------------------------------------------------------------------
-   * 5. PENULISAN DATA (CREATE / UPDATE / DELETE)
+   * 4. PENULISAN DATA (CREATE / UPDATE / DELETE)
    * ------------------------------------------------------------------ */
 
   /** Simpan menu: tanpa id_menu -> tambah, dengan id_menu -> ubah. */
   function simpanMenu(data) {
-    if (CONFIG.mode === 'php') {
-      var ubah = Number(data.id_menu) > 0;
-      var payload = $.extend({}, data);
-      if (ubah) { payload._method = 'PUT'; }
-
-      return $.ajax({
-        url: CONFIG.phpBase + 'menu.php',
-        method: 'POST',
-        contentType: 'application/json',
-        dataType: 'json',
-        data: JSON.stringify(payload)
-      }).then(function (res) {
-        if (!res.ok) { return $.Deferred().reject(res).promise(); }
-        return res.data;
-      }, function (xhr) {
-        var res = xhr.responseJSON || { error: 'Gagal menyimpan menu.' };
-        return $.Deferred().reject(res).promise();
-      });
-    }
-
-    // ---- mode json ----
     return muatDemoDb().then(function () {
       var d = $.Deferred();
       var ubah = Number(data.id_menu) > 0;
@@ -406,27 +323,14 @@ var Api = (function ($) {
       }
 
       simpanOverlay();
-      return tunda(data.id_menu ? { id_menu: data.id_menu } : { id_menu: db.menu[db.menu.length - 1].id_menu });
+      return tunda(data.id_menu
+        ? { id_menu: Number(data.id_menu) }
+        : { id_menu: db.menu[db.menu.length - 1].id_menu });
     });
   }
 
   /** Hapus menu berdasarkan id. */
   function hapusMenu(id) {
-    if (CONFIG.mode === 'php') {
-      return $.ajax({
-        url: CONFIG.phpBase + 'menu.php',
-        method: 'POST',
-        contentType: 'application/json',
-        dataType: 'json',
-        data: JSON.stringify({ _method: 'DELETE', id_menu: id })
-      }).then(function (res) {
-        if (!res.ok) { return $.Deferred().reject(res).promise(); }
-        return res.data;
-      }, function (xhr) {
-        return $.Deferred().reject(xhr.responseJSON || { error: 'Gagal menghapus menu.' }).promise();
-      });
-    }
-
     return muatDemoDb().then(function () {
       var dipakai = $.grep(db.detail_pesanan, function (d) {
         return Number(d.id_menu) === Number(id);
@@ -443,34 +347,27 @@ var Api = (function ($) {
   }
 
   /**
-   * Buat pesanan baru (form 2.c).
+   * Buat pesanan baru (dipanggil dari form transaksi butir 2.c).
    * payload = { id_user, catatan, items:[{id_menu, jumlah}] }
+   *
+   * Total & subtotal dihitung ulang di sini dari harga menu, bukan dari
+   * angka yang dikirim browser — sama seperti yang dilakukan server.
    */
   function buatPesanan(payload) {
-    if (CONFIG.mode === 'php') {
-      return $.ajax({
-        url: CONFIG.phpBase + 'pesanan.php',
-        method: 'POST',
-        contentType: 'application/json',
-        dataType: 'json',
-        data: JSON.stringify(payload)
-      }).then(function (res) {
-        if (!res.ok) { return $.Deferred().reject(res).promise(); }
-        return res.data;
-      }, function (xhr) {
-        return $.Deferred().reject(xhr.responseJSON || { error: 'Gagal menyimpan pesanan.' }).promise();
-      });
-    }
-
-    // ---- mode json: tiru logika transaksi PHP ----
     return muatDemoDb().then(function () {
       var d = $.Deferred();
 
       if (!payload.id_user) {
-        return d.reject({ error: 'Data belum valid.', fields: { id_user: 'Nama pemesan wajib dipilih.' } }).promise();
+        return d.reject({
+          error: 'Data belum valid.',
+          fields: { id_user: 'Nama pemesan wajib dipilih.' }
+        }).promise();
       }
       if (!payload.items || !payload.items.length) {
-        return d.reject({ error: 'Data belum valid.', fields: { items: 'Pilih minimal satu menu.' } }).promise();
+        return d.reject({
+          error: 'Data belum valid.',
+          fields: { items: 'Pilih minimal satu menu.' }
+        }).promise();
       }
 
       var total = 0;
@@ -490,9 +387,11 @@ var Api = (function ($) {
         }
         if (Number(it.jumlah) > Number(menu.stok)) {
           return d.reject({
-            error: 'Stok "' + menu.nama_menu + '" tinggal ' + menu.stok + ', tidak cukup untuk ' + it.jumlah + '.'
+            error: 'Stok "' + menu.nama_menu + '" tinggal ' + menu.stok +
+                   ', tidak cukup untuk ' + it.jumlah + '.'
           }).promise();
         }
+
         var sub = Number(menu.harga) * Number(it.jumlah);
         total += sub;
         rincian.push({
@@ -510,8 +409,9 @@ var Api = (function ($) {
 
       var sekarang = new Date();
       var pad = function (n) { return (n < 10 ? '0' : '') + n; };
-      var waktu = sekarang.getFullYear() + '-' + pad(sekarang.getMonth() + 1) + '-' + pad(sekarang.getDate()) +
-                  ' ' + pad(sekarang.getHours()) + ':' + pad(sekarang.getMinutes()) + ':00';
+      var waktu = sekarang.getFullYear() + '-' + pad(sekarang.getMonth() + 1) + '-' +
+                  pad(sekarang.getDate()) + ' ' + pad(sekarang.getHours()) + ':' +
+                  pad(sekarang.getMinutes()) + ':00';
 
       db.pesanan.push({
         id_pesanan: idBaru,
@@ -551,21 +451,6 @@ var Api = (function ($) {
 
   /** Ubah status pesanan. */
   function ubahStatusPesanan(id, status) {
-    if (CONFIG.mode === 'php') {
-      return $.ajax({
-        url: CONFIG.phpBase + 'pesanan.php',
-        method: 'POST',
-        contentType: 'application/json',
-        dataType: 'json',
-        data: JSON.stringify({ _method: 'PUT', id_pesanan: id, status: status })
-      }).then(function (res) {
-        if (!res.ok) { return $.Deferred().reject(res).promise(); }
-        return res.data;
-      }, function (xhr) {
-        return $.Deferred().reject(xhr.responseJSON || { error: 'Gagal mengubah status.' }).promise();
-      });
-    }
-
     return muatDemoDb().then(function () {
       var ketemu = false;
       $.each(db.pesanan, function (i, p) {
@@ -583,23 +468,8 @@ var Api = (function ($) {
     });
   }
 
-  /** Hapus pesanan + kembalikan stok. */
+  /** Hapus pesanan + kembalikan stok menu. */
   function hapusPesanan(id) {
-    if (CONFIG.mode === 'php') {
-      return $.ajax({
-        url: CONFIG.phpBase + 'pesanan.php',
-        method: 'POST',
-        contentType: 'application/json',
-        dataType: 'json',
-        data: JSON.stringify({ _method: 'DELETE', id_pesanan: id })
-      }).then(function (res) {
-        if (!res.ok) { return $.Deferred().reject(res).promise(); }
-        return res.data;
-      }, function (xhr) {
-        return $.Deferred().reject(xhr.responseJSON || { error: 'Gagal menghapus pesanan.' }).promise();
-      });
-    }
-
     return muatDemoDb().then(function () {
       var rincian = $.grep(db.detail_pesanan, function (d) {
         return Number(d.id_pesanan) === Number(id);
@@ -624,7 +494,7 @@ var Api = (function ($) {
     });
   }
 
-  /** Kembalikan seluruh data demo ke kondisi awal. */
+  /** Kembalikan seluruh data ke kondisi awal (hapus simpanan browser). */
   function resetDemo() {
     hapusOverlay();
     db = null;
@@ -632,46 +502,35 @@ var Api = (function ($) {
   }
 
   /* ------------------------------------------------------------------
-   * 6. LOGIN (hanya tersedia di mode php)
+   * 5. INISIALISASI
    * ------------------------------------------------------------------ */
 
-  function login(username, password) {
-    return $.ajax({
-      url: 'auth/login.php',
-      method: 'POST',
-      contentType: 'application/json',
-      dataType: 'json',
-      data: JSON.stringify({ username: username, password: password })
-    }).then(function (res) {
-      if (!res.ok) { return $.Deferred().reject(res).promise(); }
-      return res.data;
-    }, function (xhr) {
-      return $.Deferred().reject(xhr.responseJSON || { error: 'Gagal login.' }).promise();
+  /**
+   * Dipanggil sekali saat aplikasi dibuka.
+   * Hasil: 'json' kalau data berhasil dimuat, 'file' kalau dibuka
+   * dengan klik ganda sehingga AJAX diblokir browser.
+   */
+  function init() {
+    if (window.location.protocol === 'file:') {
+      CONFIG.fileMode = true;
+      return tunda('file');
+    }
+
+    return muatDemoDb().then(function () {
+      return 'json';
+    }, function (pesan) {
+      return $.Deferred().reject(pesan).promise();
     });
   }
 
-  function logout() {
-    return $.ajax({ url: 'auth/logout.php', dataType: 'json', cache: false });
-  }
-
-  function cekLogin() {
-    return $.ajax({
-      url: 'auth/login.php',
-      data: { cek: 1 },
-      dataType: 'json',
-      cache: false
-    }).then(function (res) { return res.data || { login: false }; });
-  }
-
   /* ------------------------------------------------------------------
-   * 7. ANTARMUKA PUBLIK
+   * 6. ANTARMUKA PUBLIK
    * ------------------------------------------------------------------ */
 
   return {
     config: CONFIG,
-    init: deteksiMode,
-    mode: function () { return CONFIG.mode; },
-    setMode: function (m) { CONFIG.mode = m; CONFIG.terdeteksi = true; },
+    init: init,
+    segarkan: segarkan,
 
     menu: ambilMenu,
     kategori: ambilKategori,
@@ -686,10 +545,6 @@ var Api = (function ($) {
     ubahStatusPesanan: ubahStatusPesanan,
     hapusPesanan: hapusPesanan,
     resetDemo: resetDemo,
-
-    login: login,
-    logout: logout,
-    cekLogin: cekLogin,
 
     util: { esc: esc, rupiah: rupiah, tanggal: tanggal }
   };

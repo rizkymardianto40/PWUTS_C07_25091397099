@@ -1,6 +1,6 @@
 -- =====================================================================
 -- DATABASE KANTIN KAMPUS
--- Tugas UTS Pemrograman Web - PWUTS_A07_25091397099
+-- Tugas UTS Pemrograman Web - PWUTS_C07_25091397099
 -- Rizky Mardianto / 25091397099
 -- =====================================================================
 -- Cara import (XAMPP):
