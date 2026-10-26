@@ -318,10 +318,22 @@ git remote add origin https://github.com/<username>/PWUTS_A07_25091397099.git
 git push -u origin main
 ```
 
-Saat diminta, masukkan username GitHub dan **Personal Access Token** sebagai
+Saat menjalankan `git push` pertama kali, akan muncul **jendela login GitHub di
+browser**. Klik **"Sign in with your browser"**, lalu setujui permintaannya.
+Setelah itu Git menyimpan izinnya, jadi push berikutnya tidak perlu login lagi.
+
+Bila jendela browser tidak muncul, gunakan **Personal Access Token** sebagai
 password (bukan password akun). Buat token di:
 **GitHub → Settings → Developer settings → Personal access tokens → Tokens
 (classic) → Generate new token**, centang scope **`repo`**.
+
+> Jika muncul error **"Please tell me who you are"**, atur identitas Git sekali
+> saja (ganti email dengan email akun GitHub Anda):
+>
+> ```bash
+> git config --global user.name "Rizky Mardianto"
+> git config --global user.email "email-anda@gmail.com"
+> ```
 
 ### Langkah 4 — Verifikasi
 
