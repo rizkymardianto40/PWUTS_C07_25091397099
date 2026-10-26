@@ -19,6 +19,23 @@ mengambil data tanpa memuat ulang (reload) halaman.
 
 ## 1. Pemenuhan Ketentuan Soal UTS
 
+Ringkasan cepat — semua butir soal dan tempat pemenuhannya:
+
+| Butir | Ketentuan soal | Dipenuhi oleh |
+|---|---|---|
+| 1.a | UTS bersifat pribadi | Dikerjakan sendiri |
+| 1.b | Topik sesuai proposal | Website Kantin Kampus |
+| 2.a | `index.html` layout utama, responsif, HTML/CSS/JS, hyperlink menu ke 2.b & 2.c dengan **AJAX**, gambar | `index.html`, `css/style.css`, `js/admin.js` |
+| 2.b | Min. 1 halaman HTML berisi konten topik + interaktif jQuery, bagian dari layout utama | `pages/dashboard.html` |
+| 2.c | Min. 1 halaman HTML berisi **form transaksi sesuai struktur database proposal** + validasi JS/jQuery sebelum submit ke server HTTP, bagian dari layout utama | `pages/transaksi.html` + `js/admin.js` |
+| 2.d | Tidak boleh sama dengan anggota kelompok | Rancangan sendiri |
+| 2.e | Catatan pengerjaan (README.md) | Berkas ini |
+| 3.a | Semua file diunggah ke akun GitHub | Langkah di bagian 7 |
+| 3.b | Repositori bernama `PWUTS_A07_25091397099` | Nama repo saat membuat di GitHub |
+| 3.c | URL harus bisa diakses | `https://github.com/<username>/PWUTS_A07_25091397099` |
+
+Penjelasan tiap butir di bawah ini.
+
 ### Butir 2.a — Halaman utama sebagai layout, responsif, hyperlink dengan AJAX
 
 | Ketentuan | Implementasi |
@@ -309,21 +326,27 @@ Catatan teknis:
 4. **Jangan** centang "Add a README file" (README sudah ada di folder).
 5. Klik **Create repository**.
 
-### Langkah 2 — Inisialisasi Git di folder proyek
+> **Hati-hati:** kalau nanti memakai menu VS Code, nama yang terisi otomatis
+> adalah nama folder lokal (`kantin-kampus-admin`). **Ganti** menjadi
+> `PWUTS_A07_25091397099`. Ini kesalahan paling sering dan berakibat URL tidak
+> sesuai ketentuan butir 3.c.
 
-Buka terminal di VS Code (**Terminal → New Terminal**), pastikan posisi folder
-sudah benar, lalu jalankan berurutan:
+### Langkah 2 — Riwayat Git (sudah selesai)
+
+Folder ini **sudah** dijalankan `git init`, `git add`, dan `git commit`.
+Tidak perlu diulang. Cek dengan:
 
 ```bash
-git init
-git add .
-git commit -m "UTS Pemrograman Web: Website Kantin Kampus (PWUTS_A07_25091397099)"
+git log --oneline
 ```
 
-Cek nama branch (harus `main`):
+Harus muncul minimal satu baris commit.
+
+Kalau nanti Anda mengubah file lagi, simpan perubahannya dengan:
 
 ```bash
-git branch -M main
+git add .
+git commit -m "keterangan perubahan"
 ```
 
 ### Langkah 3 — Hubungkan ke repositori GitHub
@@ -363,11 +386,33 @@ password (bukan password akun). Buat token di:
 > mengumpulkan**. Periksa kembali ejaan nama repositori dan pastikan statusnya
 > **Public**.
 
-### (Opsional) Cara lewat VS Code tanpa terminal
+### Yang dikumpulkan
 
-1. **Source Control** → **Initialize Repository**.
-2. Tulis pesan commit → **Commit** → **Publish Branch**.
-3. Pilih **Public**, nama repositori `PWUTS_A07_25091397099` → **Publish**.
+Yang perlu diserahkan **hanya URL repositori**:
+
+```
+https://github.com/<username>/PWUTS_A07_25091397099
+```
+
+Kirimkan lewat tempat yang ditentukan dosen (LMS / Google Form / email).
+
+**Cara memastikan repo benar-benar bisa diakses dosen:** buka URL tersebut di
+jendela **incognito / private** (Ctrl+Shift+N). Kalau tetap terbuka dan file
+terlihat, berarti repo sudah Public dan aman. Kalau diminta login, berarti masih
+Private — ubah di **Settings → General → Danger Zone → Change visibility**.
+
+### Cara lewat VS Code (tanpa terminal)
+
+Kalau lebih nyaman tanpa mengetik perintah:
+
+1. Buka panel **Source Control** (ikon cabang) di sidebar kiri VS Code.
+2. Klik tombol **Publish Branch**.
+3. VS Code minta izin ke GitHub → klik **Allow** / **Sign in**, lalu login di
+   browser yang terbuka.
+4. Muncul kotak memilih **Public** atau **Private** → pilih **Public**.
+5. VS Code menyarankan nama repositori dari nama folder
+   (`kantin-kampus-admin`) → **ganti** menjadi `PWUTS_A07_25091397099`.
+6. Klik **Publish** dan tunggu proses unggah selesai.
 
 ---
 
