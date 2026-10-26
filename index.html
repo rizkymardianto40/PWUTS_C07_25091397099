@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Panel admin Website Kantin Kampus — Tugas UTS Pemrograman Web.">
+  <title>Admin | Kantin Kampus</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23123e30'/%3E%3Ctext x='16' y='22' font-family='Arial,sans-serif' font-size='14' font-weight='bold' fill='%23ffffff' text-anchor='middle'%3EKK%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Penanda bahwa halaman dibuka di dalam layout utama (dipakai file di pages/) -->
+<script>window.KK_SHELL = true;</script>
+
+<div class="app-shell">
+
+  <!-- ============================ SIDEBAR ============================ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">KK</div>
+      <div>
+        <strong>Kantin Kampus</strong>
+        <small>Admin Panel</small>
+      </div>
+    </div>
+
+    <nav class="nav-menu" aria-label="Navigasi admin">
+      <!-- Hyperlink asli. Klik akan dicegat jQuery lalu dimuat dengan AJAX. -->
+      <a class="nav-link active" href="pages/dashboard.html" data-page="dashboard">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3h8v8H3zM13 3h8v5h-8zM13 10h8v11h-8zM3 13h8v8H3z"/></svg>
+        <span>Dashboard</span>
+      </a>
+
+      <a class="nav-link" href="pages/kelola-menu.html" data-page="menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v4H4zM4 10h16v4H4zM4 16h10v4H4z"/></svg>
+        <span>Kelola Menu</span>
+      </a>
+
+      <a class="nav-link" href="pages/pesanan.html" data-page="pesanan">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h12a2 2 0 0 1 2 2v18l-8-4-8 4V4a2 2 0 0 1 2-2z"/></svg>
+        <span>Pesanan &amp; Transaksi</span>
+      </a>
+
+      <a class="nav-link" href="pages/transaksi.html" data-page="transaksi">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 2h2v9h9v2h-9v9h-2v-9H2v-2h9z"/></svg>
+        <span>Transaksi Baru</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="mode-line">
+        <span class="status-dot" id="mode-dot"></span>
+        <span id="mode-text">Menghubungkan…</span>
+      </div>
+      <small id="mode-note">Memeriksa koneksi ke backend.</small>
+    </div>
+  </aside>
+
+  <!-- Overlay untuk sidebar mode ponsel -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <!-- ============================ KONTEN ============================ -->
+  <main class="main-content">
+
+    <header class="topbar">
+      <div class="topbar-left">
+        <button class="menu-toggle" id="menu-toggle" aria-label="Buka menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18v2H3zM3 11h18v2H3zM3 16h18v2H3z"/></svg>
+        </button>
+        <div>
+          <p class="eyebrow" id="page-eyebrow">PENGELOLAAN KANTIN</p>
+          <h1 id="page-title">Dashboard</h1>
+        </div>
+      </div>
+
+      <div class="admin-chip">
+        <span class="avatar" id="admin-avatar">A</span>
+        <span>
+          <strong id="admin-nama">Administrator</strong>
+          <small id="admin-peran">Panel admin</small>
+        </span>
+      </div>
+    </header>
+
+    <!-- Di sinilah seluruh halaman dari folder pages/ dimuat lewat AJAX -->
+    <section id="page-content" aria-live="polite" aria-busy="false">
+      <div class="loading-state">
+        <span class="spinner"></span>
+        <p>Memuat halaman…</p>
+      </div>
+    </section>
+
+    <footer>
+      Website Kantin Kampus &middot; Panel Admin &middot;
+      <span>Rizky Mardianto — 25091397099 — Kelompok A07</span>
+    </footer>
+  </main>
+</div>
+
+<!-- Tumpukan notifikasi -->
+<div class="toast-stack" id="toast-stack" aria-live="polite"></div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="js/api.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>

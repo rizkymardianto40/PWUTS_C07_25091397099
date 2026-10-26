@@ -1,0 +1,117 @@
+<script>
+  if (!window.KK_SHELL) { window.location.replace('../index.html#/menu'); }
+</script>
+
+<div class="toolbar">
+  <div>
+    <h2>Kelola Menu</h2>
+    <p>Kelola makanan dan minuman yang ditawarkan kantin.</p>
+  </div>
+
+  <div class="toolbar-actions">
+    <input type="search" id="menu-search" class="search" placeholder="Cari nama menu...">
+    <button class="btn" id="btn-tambah-menu" type="button">+ Tambah Menu</button>
+  </div>
+</div>
+
+<div class="filter-row">
+  <label for="filter-kategori" class="filter-label">Kategori</label>
+  <select id="filter-kategori" class="filter-select">
+    <option value="">Semua kategori</option>
+  </select>
+  <span class="pill" id="menu-count">0 menu</span>
+</div>
+
+<section class="panel">
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Menu</th>
+          <th>Kategori</th>
+          <th>Stan</th>
+          <th class="num">Harga</th>
+          <th class="num">Stok</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="menu-rows">
+        <tr><td colspan="6" class="empty-note">Memuat data&hellip;</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ================= Form tambah / ubah menu ================= -->
+<div class="modal-backdrop" id="modal-menu" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-menu-title">
+    <div class="modal-head">
+      <h3 id="modal-menu-title">Tambah Menu</h3>
+      <button class="close-btn" type="button" data-tutup-modal aria-label="Tutup">&times;</button>
+    </div>
+
+    <form id="form-menu" novalidate>
+      <input type="hidden" name="id_menu" value="">
+
+      <div class="form-grid">
+        <div class="field full">
+          <label for="f-nama-menu">Nama menu <span class="req">*</span></label>
+          <input type="text" id="f-nama-menu" name="nama_menu" placeholder="Contoh: Nasi Goreng Spesial" autocomplete="off">
+          <p class="msg" data-msg-for="nama_menu"></p>
+        </div>
+
+        <div class="field">
+          <label for="f-kategori">Kategori <span class="req">*</span></label>
+          <select id="f-kategori" name="id_kategori">
+            <option value="">Pilih kategori</option>
+          </select>
+          <p class="msg" data-msg-for="id_kategori"></p>
+        </div>
+
+        <div class="field">
+          <label for="f-penjual">Stan penjual</label>
+          <select id="f-penjual" name="id_penjual">
+            <option value="">Tanpa stan</option>
+          </select>
+          <p class="msg" data-msg-for="id_penjual"></p>
+        </div>
+
+        <div class="field">
+          <label for="f-harga">Harga (Rp) <span class="req">*</span></label>
+          <input type="number" id="f-harga" name="harga" min="500" step="500" placeholder="15000">
+          <p class="msg" data-msg-for="harga"></p>
+        </div>
+
+        <div class="field">
+          <label for="f-stok">Stok <span class="req">*</span></label>
+          <input type="number" id="f-stok" name="stok" min="0" step="1" placeholder="20">
+          <p class="msg" data-msg-for="stok"></p>
+        </div>
+
+        <div class="field full">
+          <label for="f-deskripsi">Deskripsi</label>
+          <textarea id="f-deskripsi" name="deskripsi" rows="2" placeholder="Keterangan singkat menu"></textarea>
+          <p class="msg" data-msg-for="deskripsi"></p>
+        </div>
+
+        <div class="field full">
+          <label for="f-foto">Foto menu</label>
+          <input type="text" id="f-foto" name="foto" placeholder="assets/Nasi Goreng.jpg">
+          <p class="hint">Kosongkan bila belum ada foto. Nama file harus ada di folder assets/.</p>
+          <p class="msg" data-msg-for="foto"></p>
+        </div>
+
+        <div class="field full">
+          <label class="check-line">
+            <input type="checkbox" name="populer" value="1"> Tandai sebagai menu populer
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-foot">
+        <button type="button" class="btn secondary" data-tutup-modal>Batal</button>
+        <button type="submit" class="btn" id="btn-simpan-menu">Simpan Menu</button>
+      </div>
+    </form>
+  </div>
+</div>

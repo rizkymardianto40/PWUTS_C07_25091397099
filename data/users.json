@@ -1,0 +1,26 @@
+[
+    {
+        "id_user": 1,
+        "nama": "Rizky Mardianto",
+        "username": "rizky",
+        "role": "mahasiswa"
+    },
+    {
+        "id_user": 2,
+        "nama": "Nadia Putri",
+        "username": "nadia",
+        "role": "mahasiswa"
+    },
+    {
+        "id_user": 3,
+        "nama": "Bagas Prakoso",
+        "username": "bagas",
+        "role": "mahasiswa"
+    },
+    {
+        "id_user": 4,
+        "nama": "Administrator Kantin",
+        "username": "admin",
+        "role": "admin"
+    }
+]

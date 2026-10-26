@@ -1,0 +1,69 @@
+<script>
+  if (!window.KK_SHELL) { window.location.replace('../index.html#/pesanan'); }
+</script>
+
+<div class="toolbar">
+  <div>
+    <h2>Pesanan &amp; Transaksi</h2>
+    <p>Pantau pesanan mahasiswa dan perbarui statusnya.</p>
+  </div>
+
+  <div class="toolbar-actions">
+    <input type="search" id="pesanan-search" class="search" placeholder="Cari pemesan...">
+    <a class="btn" href="transaksi.html" data-page="transaksi">+ Transaksi Baru</a>
+  </div>
+</div>
+
+<div class="filter-row">
+  <label for="filter-status" class="filter-label">Status</label>
+  <select id="filter-status" class="filter-select">
+    <option value="">Semua status</option>
+    <option value="Menunggu">Menunggu</option>
+    <option value="Diproses">Diproses</option>
+    <option value="Siap diambil">Siap diambil</option>
+    <option value="Selesai">Selesai</option>
+    <option value="Dibatalkan">Dibatalkan</option>
+  </select>
+  <span class="pill" id="pesanan-count">0 pesanan</span>
+</div>
+
+<div class="notice">
+  Alur status: <strong>Menunggu</strong> &rarr; <strong>Diproses</strong> &rarr;
+  <strong>Siap diambil</strong> &rarr; <strong>Selesai</strong>.
+  Mengubah status langsung tersimpan ke database.
+</div>
+
+<section class="panel">
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>No. Pesanan</th>
+          <th>Pemesan</th>
+          <th>Tanggal</th>
+          <th class="num">Item</th>
+          <th class="num">Total</th>
+          <th>Status</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody id="pesanan-rows">
+        <tr><td colspan="7" class="empty-note">Memuat data&hellip;</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ================= Rincian pesanan ================= -->
+<div class="modal-backdrop" id="modal-detail" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-detail-title">
+    <div class="modal-head">
+      <h3 id="modal-detail-title">Rincian Pesanan</h3>
+      <button class="close-btn" type="button" data-tutup-modal aria-label="Tutup">&times;</button>
+    </div>
+    <div id="modal-detail-body" class="modal-body"></div>
+    <div class="modal-foot">
+      <button type="button" class="btn secondary" data-tutup-modal>Tutup</button>
+    </div>
+  </div>
+</div>

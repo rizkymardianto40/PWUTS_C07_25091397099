@@ -1,0 +1,74 @@
+[
+    {
+        "id_detail": 1,
+        "id_pesanan": 1,
+        "id_menu": 1,
+        "jumlah": 1,
+        "harga_satuan": 15000,
+        "subtotal": 15000
+    },
+    {
+        "id_detail": 2,
+        "id_pesanan": 1,
+        "id_menu": 3,
+        "jumlah": 1,
+        "harga_satuan": 5000,
+        "subtotal": 5000
+    },
+    {
+        "id_detail": 3,
+        "id_pesanan": 2,
+        "id_menu": 2,
+        "jumlah": 1,
+        "harga_satuan": 18000,
+        "subtotal": 18000
+    },
+    {
+        "id_detail": 4,
+        "id_pesanan": 3,
+        "id_menu": 3,
+        "jumlah": 1,
+        "harga_satuan": 5000,
+        "subtotal": 5000
+    },
+    {
+        "id_detail": 5,
+        "id_pesanan": 4,
+        "id_menu": 2,
+        "jumlah": 1,
+        "harga_satuan": 18000,
+        "subtotal": 18000
+    },
+    {
+        "id_detail": 6,
+        "id_pesanan": 4,
+        "id_menu": 5,
+        "jumlah": 1,
+        "harga_satuan": 8000,
+        "subtotal": 8000
+    },
+    {
+        "id_detail": 7,
+        "id_pesanan": 4,
+        "id_menu": 3,
+        "jumlah": 1,
+        "harga_satuan": 5000,
+        "subtotal": 5000
+    },
+    {
+        "id_detail": 8,
+        "id_pesanan": 5,
+        "id_menu": 1,
+        "jumlah": 1,
+        "harga_satuan": 15000,
+        "subtotal": 15000
+    },
+    {
+        "id_detail": 9,
+        "id_pesanan": 6,
+        "id_menu": 4,
+        "jumlah": 1,
+        "harga_satuan": 12000,
+        "subtotal": 12000
+    }
+]

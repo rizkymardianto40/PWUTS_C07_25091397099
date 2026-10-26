@@ -1,0 +1,111 @@
+<script>
+  /* Kalau file ini dibuka langsung (bukan lewat AJAX), kembalikan ke layout utama. */
+  if (!window.KK_SHELL) { window.location.replace('../index.html#/dashboard'); }
+</script>
+
+<div class="toolbar">
+  <div>
+    <h2>Ringkasan Kantin</h2>
+    <p>Pantau aktivitas kantin kampus hari ini.</p>
+  </div>
+  <div class="toolbar-actions">
+    <button class="btn secondary small" id="btn-refresh-dash" type="button">Muat ulang</button>
+  </div>
+</div>
+
+<!-- Kartu statistik: angka dianimasikan dengan jQuery .animate() -->
+<div class="stats-grid">
+  <article class="stat-card">
+    <div class="stat-top">
+      <span class="stat-icon">&#9638;</span>
+      <span class="pill">Menu aktif</span>
+    </div>
+    <p class="stat-value" data-stat="total_menu">0</p>
+    <p class="stat-note">jenis menu tersedia</p>
+  </article>
+
+  <article class="stat-card">
+    <div class="stat-top">
+      <span class="stat-icon">&#9636;</span>
+      <span class="pill">Pesanan</span>
+    </div>
+    <p class="stat-value" data-stat="total_pesanan">0</p>
+    <p class="stat-note">transaksi tercatat</p>
+  </article>
+
+  <article class="stat-card">
+    <div class="stat-top">
+      <span class="stat-icon">Rp</span>
+      <span class="pill">Pendapatan</span>
+    </div>
+    <p class="stat-value" data-stat="pendapatan" data-money="1">Rp0</p>
+    <p class="stat-note">tanpa pesanan dibatalkan</p>
+  </article>
+
+  <article class="stat-card">
+    <div class="stat-top">
+      <span class="stat-icon">&#9678;</span>
+      <span class="pill">Stan</span>
+    </div>
+    <p class="stat-value" data-stat="total_penjual">0</p>
+    <p class="stat-note">penjual terdaftar</p>
+  </article>
+</div>
+
+<div class="content-grid">
+
+  <!-- ============ Panel interaktif: pesanan terbaru ============ -->
+  <section class="panel">
+    <div class="panel-heading">
+      <div>
+        <h3>Pesanan Terbaru</h3>
+        <p>Klik baris untuk melihat rincian item.</p>
+      </div>
+      <a class="btn secondary small" href="pesanan.html" data-page="pesanan">Lihat semua</a>
+    </div>
+
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>No.</th>
+            <th>Pemesan</th>
+            <th class="num">Total</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="dash-orders">
+          <tr><td colspan="4" class="empty-note">Memuat data&hellip;</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="dash-detail" class="detail-box" hidden></div>
+  </section>
+
+  <!-- ============ Panel interaktif: menu terlaris ============ -->
+  <section class="panel">
+    <div class="panel-heading">
+      <div>
+        <h3>Menu Terlaris</h3>
+        <p>Berdasarkan jumlah item terjual.</p>
+      </div>
+    </div>
+    <div id="dash-populer" class="quick-list">
+      <p class="empty-note">Memuat data&hellip;</p>
+    </div>
+  </section>
+</div>
+
+<!-- ============ Distribusi status (interaktif) ============ -->
+<section class="panel">
+  <div class="panel-heading">
+    <div>
+      <h3>Distribusi Status Pesanan</h3>
+      <p>Klik salah satu status untuk menyaring tabel di atas.</p>
+    </div>
+  </div>
+  <div id="dash-status" class="status-chips">
+    <p class="empty-note">Memuat data&hellip;</p>
+  </div>
+</section>

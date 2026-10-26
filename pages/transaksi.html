@@ -1,0 +1,140 @@
+<script>
+  if (!window.KK_SHELL) { window.location.replace('../index.html#/transaksi'); }
+</script>
+
+<div class="toolbar">
+  <div>
+    <h2>Transaksi Baru</h2>
+    <p>Catat pesanan kantin. Data divalidasi di browser, lalu dikirim ke server.</p>
+  </div>
+  <div class="toolbar-actions">
+    <a class="btn secondary small" href="pesanan.html" data-page="pesanan">Lihat daftar pesanan</a>
+  </div>
+</div>
+
+<form id="form-transaksi" novalidate autocomplete="off">
+  <div class="form-layout">
+
+    <!-- ==================== KOLOM KIRI: INPUT ==================== -->
+    <div class="form-main">
+
+      <!-- ---------- 1. Data pemesan (tabel users) ---------- -->
+      <section class="panel">
+        <div class="panel-heading">
+          <div>
+            <h3>1. Data Pemesan</h3>
+            <p>Tersimpan pada tabel <code>users</code>.</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="field full">
+            <label for="f-pemesan">Nama pemesan <span class="req">*</span></label>
+            <select id="f-pemesan" name="id_user">
+              <option value="">-- Pilih mahasiswa --</option>
+            </select>
+            <p class="hint">Daftar diambil dari tabel <code>users</code> lewat AJAX.</p>
+            <p class="msg" data-msg-for="id_user"></p>
+          </div>
+
+          <div class="field full">
+            <label for="f-catatan">Catatan pesanan</label>
+            <textarea id="f-catatan" name="catatan" rows="2"
+                      placeholder="Contoh: tanpa sambal, dibungkus"></textarea>
+            <p class="hint"><span id="catatan-sisa">500</span> karakter tersisa.</p>
+            <p class="msg" data-msg-for="catatan"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- 2. Pilih menu (tabel menu) ---------- -->
+      <section class="panel">
+        <div class="panel-heading">
+          <div>
+            <h3>2. Pilih Menu</h3>
+            <p>Data diambil dari tabel <code>menu</code>. Stok ikut berkurang saat pesanan disimpan.</p>
+          </div>
+        </div>
+
+        <div class="picker-row">
+          <div class="field picker-menu">
+            <label for="f-menu">Menu <span class="req">*</span></label>
+            <select id="f-menu">
+              <option value="">-- Pilih menu --</option>
+            </select>
+            <p class="msg" data-msg-for="pilih_menu"></p>
+          </div>
+
+          <div class="field picker-jumlah">
+            <label for="f-jumlah">Jumlah <span class="req">*</span></label>
+            <div class="counter">
+              <button type="button" class="counter-btn" data-step="-1" aria-label="Kurangi">&minus;</button>
+              <input type="number" id="f-jumlah" value="1" min="1" step="1" inputmode="numeric">
+              <button type="button" class="counter-btn" data-step="1" aria-label="Tambah">+</button>
+            </div>
+            <p class="msg" data-msg-for="jumlah"></p>
+          </div>
+
+          <div class="field picker-aksi">
+            <button type="button" class="btn" id="btn-tambah-item">Tambah ke Pesanan</button>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table cart-table">
+            <thead>
+              <tr>
+                <th>Menu</th>
+                <th class="num">Harga</th>
+                <th class="num">Jumlah</th>
+                <th class="num">Subtotal</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="cart-rows">
+              <tr><td colspan="5" class="empty-note">Belum ada menu dipilih.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p class="msg block" data-msg-for="items"></p>
+      </section>
+    </div>
+
+    <!-- ==================== KOLOM KANAN: RINGKASAN ==================== -->
+    <aside class="form-side">
+      <section class="panel ringkasan">
+        <div class="panel-heading">
+          <div>
+            <h3>Ringkasan</h3>
+            <p>Tabel <code>pesanan</code> &amp; <code>detail_pesanan</code>.</p>
+          </div>
+        </div>
+
+        <dl class="ringkas-list">
+          <div><dt>Jumlah item</dt><dd id="ringkas-item">0</dd></div>
+          <div><dt>Jenis menu</dt><dd id="ringkas-jenis">0</dd></div>
+          <div><dt>Pemesan</dt><dd id="ringkas-pemesan">&mdash;</dd></div>
+          <div class="ringkas-total"><dt>Total bayar</dt><dd id="ringkas-total">Rp0</dd></div>
+        </dl>
+
+        <button type="submit" class="btn block-btn" id="btn-simpan-pesanan">Simpan Pesanan</button>
+        <button type="button" class="btn secondary block-btn" id="btn-reset-form">Kosongkan Form</button>
+
+        <p class="hint center">
+          Data dikirim ke <code>api/pesanan.php</code> menggunakan AJAX.
+        </p>
+      </section>
+
+      <section class="panel" id="hasil-panel" hidden>
+        <div class="panel-heading">
+          <div>
+            <h3>Pesanan Tersimpan</h3>
+            <p id="hasil-keterangan"></p>
+          </div>
+        </div>
+        <div id="hasil-body" class="modal-body"></div>
+      </section>
+    </aside>
+  </div>
+</form>

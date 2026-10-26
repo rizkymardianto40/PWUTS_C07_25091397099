@@ -1,0 +1,26 @@
+[
+    {
+        "id_penjual": 1,
+        "nama_penjual": "Warung Bu Sari",
+        "lokasi": "Stan A-01",
+        "jam_operasional": "07.30 - 16.00",
+        "deskripsi": "Masakan rumahan porsi mahasiswa.",
+        "aktif": 1
+    },
+    {
+        "id_penjual": 2,
+        "nama_penjual": "Kedai Segar Kampus",
+        "lokasi": "Stan A-02",
+        "jam_operasional": "08.00 - 17.00",
+        "deskripsi": "Minuman dingin dan jus buah segar.",
+        "aktif": 1
+    },
+    {
+        "id_penjual": 3,
+        "nama_penjual": "Camilan Ceria",
+        "lokasi": "Stan B-01",
+        "jam_operasional": "09.00 - 16.00",
+        "deskripsi": "Gorengan dan camilan ringan.",
+        "aktif": 1
+    }
+]
