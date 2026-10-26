@@ -160,22 +160,42 @@ Status pesanan: `Menunggu` → `Diproses` → `Siap diambil` → `Selesai`
 
 ## 4. Cara Menjalankan
 
-Aplikasi punya **dua mode** dan memilih sendiri secara otomatis saat dibuka:
+Aplikasi bisa dijalankan **tanpa database sama sekali**. Cukup Live Server —
+seluruh fitur (kelola menu, transaksi, ubah status, validasi form) tetap berfungsi
+penuh. MySQL hanya **opsional**, gunanya untuk menyimpan data secara permanen.
 
-| Mode | Syarat | Penyimpanan data |
-|---|---|---|
-| **PHP + MySQL** | Apache & MySQL XAMPP menyala | Permanen di database |
-| **Demo (JSON)** | Live Server / server statis apa pun | `localStorage` browser |
+| Mode | Syarat | Penyimpanan data | Untuk apa |
+|---|---|---|---|
+| **Demo (JSON)** — default | Live Server / server statis | `localStorage` browser | Demo & pengumpulan tugas |
+| **PHP + MySQL** — opsional | Apache & MySQL XAMPP | Permanen di database | Menunjukkan backend bekerja |
 
-Penanda mode terlihat di kiri bawah sidebar: **"Terhubung ke MySQL"** (hijau)
-atau **"Mode demo (data JSON)"** (kuning).
+Penanda mode terlihat di kiri bawah sidebar: **"Mode demo (data JSON)"** (kuning)
+atau **"Terhubung ke MySQL"** (hijau).
 
 > **Penting:** jangan membuka `index.html` dengan klik ganda. Protokol `file://`
 > membuat browser memblokir AJAX ke berkas lokal, sehingga data tidak bisa
 > dimuat. Aplikasi akan menampilkan petunjuk bila hal ini terjadi. Gunakan
-> **Live Server** atau **Apache**.
+> **Live Server**.
 
-### A. Mode lengkap (PHP + MySQL) — disarankan
+### A. Cara utama — Live Server (tanpa database)
+
+1. Buka folder proyek di VS Code.
+2. Klik kanan `index.html` di panel Explorer → **Open with Live Server**.
+   (Bisa juga klik tulisan **Go Live** di pojok kanan bawah VS Code.)
+3. Browser terbuka di `http://127.0.0.1:5500/index.html` — perhatikan awalnya
+   `http://`, bukan `file://`.
+4. Semua fitur bisa dicoba. Perubahan tersimpan di browser, jadi tetap ada
+   setelah halaman dimuat ulang.
+5. Untuk mengembalikan data demo ke kondisi awal, buka Console browser lalu:
+   ```js
+   localStorage.removeItem('kk_demo_db_v1');
+   location.reload();
+   ```
+
+### B. Opsional — memakai MySQL
+
+Tidak wajib. Lakukan ini hanya kalau ingin menunjukkan data benar-benar
+tersimpan di database.
 
 1. Buka **XAMPP Control Panel**, nyalakan **Apache** dan **MySQL**.
 2. Import database:
@@ -192,16 +212,13 @@ atau **"Mode demo (data JSON)"** (kuning).
 > PHP harus dijalankan lewat Apache. **Live Server tidak bisa menjalankan PHP** —
 > kalau memakai Live Server, aplikasi otomatis masuk mode demo.
 
-### B. Mode demo (tanpa PHP)
+### Kenapa file database tetap disertakan?
 
-1. Buka folder proyek di VS Code.
-2. Klik kanan `index.html` → **Open with Live Server**.
-3. Semua fitur tetap bisa dicoba; perubahan tersimpan di browser.
-4. Untuk mengembalikan data demo ke kondisi awal, buka Console browser lalu:
-   ```js
-   localStorage.removeItem('kk_demo_db_v1');
-   location.reload();
-   ```
+Karena butir 2.c meminta form transaksi yang **sesuai struktur database pada
+proposal**. Skema di `database/kantin_kampus.sql` menjadi bukti bahwa kolom pada
+form (`id_user`, `id_menu`, `jumlah`, `subtotal`, `total`, `catatan`) memang
+mengikuti rancangan tabel — bukan dikarang. File `api/*.php` juga disertakan
+sebagai bukti kesiapan backend, meskipun tidak wajib dijalankan.
 
 ### Akun demo
 
