@@ -8,7 +8,7 @@
 | NIM | 25091397099 |
 | Kelompok | C07 |
 | Topik | Website Kantin Kampus |
-| Repositori | `https://github.com/<username>/PWUTS_C07_25091397099` |
+| Repositori | https://github.com/rizkymardianto40/PWUTS_C07_25091397099 |
 
 Aplikasi web pengelolaan kantin kampus: menampilkan menu, mencatat transaksi
 pesanan, dan memantau status pesanan.
@@ -31,9 +31,9 @@ Ringkasan cepat — semua butir soal dan tempat pemenuhannya:
 | 2.c | Min. 1 halaman HTML berisi **form transaksi sesuai struktur database proposal** + validasi JS/jQuery sebelum submit, bagian dari layout utama | `pages/transaksi.html` + `js/admin.js` |
 | 2.d | Tidak boleh sama dengan anggota kelompok | Rancangan sendiri |
 | 2.e | Catatan pengerjaan (README.md) | Berkas ini |
-| 3.a | Semua file diunggah ke akun GitHub | Bagian 6 |
-| 3.b | Repositori bernama `PWUTS_C07_25091397099` | Bagian 6 |
-| 3.c | URL harus bisa diakses | Bagian 6 |
+| 3.a | Semua file diunggah ke akun GitHub | Seluruh berkas ada di repositori (lihat tabel identitas di atas) |
+| 3.b | Repositori bernama `PWUTS_C07_25091397099` | Nama repositori sudah sesuai |
+| 3.c | URL harus bisa diakses | Repositori bersifat **Public** |
 
 ### Butir 2.a — Layout utama, responsif, hyperlink dengan AJAX
 
@@ -210,133 +210,7 @@ location.reload();
 
 ---
 
-## 6. Langkah Mengunggah ke GitHub
-
-> Ketentuan soal: repositori harus bernama **`PWUTS_<kode_kelompok>_<nim>`** →
-> `PWUTS_C07_25091397099`, dan harus bisa diakses di
-> `https://github.com/<username>/PWUTS_C07_25091397099`.
-
-### Langkah 0 — Persiapan
-
-1. Buat akun GitHub di <https://github.com> (kalau belum punya).
-2. Pastikan Git terpasang. Di terminal VS Code:
-   ```bash
-   git --version
-   ```
-
-### Langkah 1 — Buat repositori di GitHub
-
-1. Klik tombol **+** di kanan atas GitHub → **New repository**.
-2. Isi **Repository name**: `PWUTS_C07_25091397099`
-   (harus persis, huruf besar/kecil berpengaruh).
-3. Pilih **Public** (wajib, agar bisa diperiksa dosen).
-4. **Jangan** centang "Add a README file" (README sudah ada di folder).
-5. Klik **Create repository**.
-
-> **Hati-hati:** kalau memakai menu VS Code, nama yang terisi otomatis adalah
-> nama folder lokal (`kantin-kampus-admin`). **Ganti** menjadi
-> `PWUTS_C07_25091397099`. Ini kesalahan paling sering dan berakibat URL tidak
-> sesuai ketentuan butir 3.c.
-
-### Langkah 2 — Riwayat Git (sudah selesai)
-
-Folder ini **sudah** dijalankan `git init`, `git add`, dan `git commit`.
-Tidak perlu diulang. Cek dengan:
-
-```bash
-git log --oneline
-```
-
-Harus muncul minimal satu baris commit.
-
-Kalau nanti Anda mengubah file lagi, simpan perubahannya dengan:
-
-```bash
-git add .
-git commit -m "keterangan perubahan"
-```
-
-### Langkah 3 — Hubungkan ke repositori GitHub
-
-Ganti `<username>` dengan username GitHub Anda:
-
-```bash
-git remote add origin https://github.com/<username>/PWUTS_C07_25091397099.git
-git push -u origin main
-```
-
-Saat `git push` pertama kali, akan muncul **jendela login GitHub di browser**.
-Klik **"Sign in with your browser"**, lalu setujui permintaannya. Setelah itu
-Git menyimpan izinnya, jadi push berikutnya tidak perlu login lagi.
-
-Bila jendela browser tidak muncul, gunakan **Personal Access Token** sebagai
-password (bukan password akun). Buat di:
-**GitHub → Settings → Developer settings → Personal access tokens → Tokens
-(classic) → Generate new token**, centang scope **`repo`**.
-
-> Jika muncul error **"Please tell me who you are"**, atur identitas Git sekali
-> saja (ganti email dengan email akun GitHub Anda):
->
-> ```bash
-> git config --global user.name "Rizky Mardianto"
-> git config --global user.email "email-anda@gmail.com"
-> ```
-
-### Cara lewat VS Code (tanpa terminal)
-
-1. Buka panel **Source Control** (ikon cabang) di sidebar kiri VS Code.
-2. Klik tombol **Publish Branch**.
-3. VS Code minta izin ke GitHub → klik **Allow** / **Sign in**, lalu login di
-   browser yang terbuka.
-4. Muncul pilihan **Public** atau **Private** → pilih **Public**.
-5. VS Code menyarankan nama repositori dari nama folder
-   (`kantin-kampus-admin`) → **ganti** menjadi `PWUTS_C07_25091397099`.
-6. Klik **Publish** dan tunggu proses unggah selesai.
-
-### Langkah 4 — Verifikasi
-
-1. Buka `https://github.com/<username>/PWUTS_C07_25091397099`
-2. Pastikan semua file terlihat: `index.html`, `css/`, `js/`, `pages/`,
-   `data/`, `assets/`, `database/`, `README.md`.
-3. Pastikan README tampil di halaman utama repositori.
-
-### Yang dikumpulkan
-
-Yang perlu diserahkan **hanya URL repositori**:
-
-```
-https://github.com/<username>/PWUTS_C07_25091397099
-```
-
-Kirimkan lewat tempat yang ditentukan dosen (LMS / Google Form / email).
-
-**Cara memastikan repo benar-benar bisa diakses dosen:** buka URL tersebut di
-jendela **incognito / private** (Ctrl+Shift+N). Kalau tetap terbuka dan file
-terlihat, berarti repo sudah Public dan aman. Kalau diminta login, berarti masih
-Private — ubah di **Settings → General → Danger Zone → Change visibility**.
-
-> Soal menyebut: URL yang salah atau tidak dapat diakses dianggap **tidak
-> mengumpulkan**. Periksa kembali ejaan nama repositori dan pastikan statusnya
-> **Public**.
-
----
-
-## 7. Pemecahan Masalah
-
-| Gejala | Penyebab & solusi |
-|---|---|
-| Halaman menampilkan "Alamat di browser masih `file:///`" | `index.html` dibuka dengan klik ganda. Jalankan lewat Live Server |
-| Sidebar menulis "Perlu Live Server" | Sama seperti di atas — server belum aktif |
-| Data menu/pesanan kosong | Folder `data/` tidak ikut tersalin, atau dibuka lewat `file://` |
-| Halaman konten kosong / "Halaman gagal dimuat" | Folder `pages/` tidak ikut tersalin |
-| Foto menu tidak tampil | Nama file di kolom `foto` harus sama persis dengan file di `assets/` (termasuk spasi dan huruf besar/kecil) |
-| Perubahan hilang setelah ganti browser | Normal — data disimpan per-browser di `localStorage` |
-| Ingin data kembali seperti semula | `localStorage.removeItem('kk_demo_db_v1'); location.reload();` |
-| Port 5500 sudah dipakai | Live Server otomatis pindah ke 5501. Lihat alamat di browser, itulah yang dipakai |
-
----
-
-## 8. Teknologi
+## 6. Teknologi
 
 - HTML5
 - CSS3 (Grid, Flexbox, media query)
