@@ -1290,14 +1290,21 @@
         setHeader(PAGES.dashboard);
         $('#page-content').attr('aria-busy', 'false').html(
           '<div class="notice danger">' +
-            '<strong>Halaman ini dibuka langsung dari berkas (file://).</strong>' +
-            '<p>Browser memblokir permintaan AJAX ke berkas lokal, sehingga data tidak ' +
-            'bisa dimuat. Jalankan website dengan salah satu cara berikut:</p>' +
+            '<strong>Alamat di browser masih <code>file:///</code> — Live Server belum jalan.</strong>' +
+            '<p>Yang terbuka sekarang: <code>' + esc(window.location.href) + '</code></p>' +
+            '<p>Artinya berkas dibuka langsung, bukan lewat server. Browser memblokir ' +
+            'permintaan AJAX ke berkas lokal, sehingga data menu dan pesanan tidak bisa dimuat.</p>' +
+            '<p><strong>Cara membetulkannya:</strong></p>' +
             '<ol>' +
-              '<li><strong>Live Server</strong> — klik kanan <code>index.html</code> di VS Code, ' +
-                  'lalu pilih <em>Open with Live Server</em>.</li>' +
-              '<li><strong>XAMPP</strong> — salin folder proyek ke ' +
-                  '<code>C:\\xampp\\htdocs\\</code>, nyalakan Apache &amp; MySQL, lalu buka ' +
+              '<li>Di VS Code, lihat pojok <strong>kanan bawah</strong>. Kalau masih tertulis ' +
+                  '<em>Go Live</em>, server belum jalan — <strong>klik tulisan itu</strong>. ' +
+                  '(Bisa juga: klik kanan <code>index.html</code> di panel Explorer, lalu pilih ' +
+                  '<em>Open with Live Server</em>.)</li>' +
+              '<li>Browser akan terbuka sendiri dengan alamat ' +
+                  '<code>http://127.0.0.1:5500/index.html</code>. Alamat yang diawali ' +
+                  '<code>http://</code> itulah tanda Live Server sudah aktif.</li>' +
+              '<li>Kalau ingin data tersimpan permanen di MySQL, pakai XAMPP: salin folder proyek ' +
+                  'ke <code>C:\\xampp\\htdocs\\</code>, nyalakan Apache &amp; MySQL, lalu buka ' +
                   '<code>http://localhost/kantin-kampus-admin/</code>.</li>' +
             '</ol>' +
           '</div>'
